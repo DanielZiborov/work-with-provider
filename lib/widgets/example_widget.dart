@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Model extends ChangeNotifier {
   var one = 0;
@@ -15,44 +16,13 @@ class Model extends ChangeNotifier {
   }
 }
 
-class ModelProvider extends InheritedNotifier {
-  final Model model;
-  const ModelProvider({
-    super.key,
-    required this.model,
-    required super.child,
-  }) : super(notifier: model);
-
-  static ModelProvider? watch(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<ModelProvider>();
-  }
-
-  static ModelProvider? read(BuildContext context) {
-    final widget = context
-        .getElementForInheritedWidgetOfExactType<ModelProvider>()
-        ?.widget;
-    return widget is ModelProvider ? widget : null;
-  }
-
-  @override
-  bool updateShouldNotify(ModelProvider oldWidget) {
-    return true;
-  }
-}
-
-class ExampleWidget extends StatefulWidget {
+class ExampleWidget extends StatelessWidget {
   const ExampleWidget({super.key});
 
   @override
-  State<ExampleWidget> createState() => _ExampleWidgetState();
-}
-
-class _ExampleWidgetState extends State<ExampleWidget> {
-  final model = Model();
-  @override
   Widget build(BuildContext context) {
-    return ModelProvider(
-      model: model,
+    return ChangeNotifierProvider(
+      create: (context) => Model(),
       child: const _View(),
     );
   }
@@ -63,7 +33,7 @@ class _View extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = ModelProvider.read(context)!.model;
+    final model = context.read<Model>();
     return Scaffold(
       appBar: AppBar(title: const Text("Example of work")),
       body: SafeArea(
@@ -97,7 +67,7 @@ class _OneWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final value = ModelProvider.watch(context)!.model.one;
+    final value = context.watch<Model>().one;
     return Text('$value');
   }
 }
@@ -107,7 +77,7 @@ class _TwoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final value = ModelProvider.watch(context)!.model.two;
+    final value = context.watch<Model>().two;
     return Text('$value');
   }
 }
