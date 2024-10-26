@@ -16,15 +16,27 @@ class Model extends ChangeNotifier {
   }
 }
 
-class ExampleWidget extends StatelessWidget {
+class ExampleWidget extends StatefulWidget {
   const ExampleWidget({super.key});
 
   @override
+  State<ExampleWidget> createState() => _ExampleWidgetState();
+}
+
+class _ExampleWidgetState extends State<ExampleWidget> {
+  final model = Model();
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => Model(),
+    return ChangeNotifierProvider.value(
+      value: model,
       child: const _View(),
     );
+  }
+
+  @override
+  void dispose() {
+    model.dispose();
+    super.dispose();
   }
 }
 
