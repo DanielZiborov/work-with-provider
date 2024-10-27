@@ -2,6 +2,57 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+class Complex {
+  final int valueOne;
+  final int valueTwo;
+  Complex({
+    required this.valueOne,
+    required this.valueTwo,
+  });
+
+  Complex copyWith({
+    int? valueOne,
+    int? valueTwo,
+  }) {
+    return Complex(
+      valueOne: valueOne ?? this.valueOne,
+      valueTwo: valueTwo ?? this.valueTwo,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'valueOne': valueOne,
+      'valueTwo': valueTwo,
+    };
+  }
+
+  factory Complex.fromMap(Map<String, dynamic> map) {
+    return Complex(
+      valueOne: map['valueOne'] as int,
+      valueTwo: map['valueTwo'] as int,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Complex.fromJson(String source) =>
+      Complex.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() => 'Complex(valueOne: $valueOne, valueTwo: $valueTwo)';
+
+  @override
+  bool operator ==(covariant Complex other) {
+    if (identical(this, other)) return true;
+
+    return other.valueOne == valueOne && other.valueTwo == valueTwo;
+  }
+
+  @override
+  int get hashCode => valueOne.hashCode ^ valueTwo.hashCode;
+}
+
 class Model {
   final int one;
   final int two;
@@ -120,7 +171,7 @@ class _View extends StatelessWidget {
 }
 
 class _OneWidget extends StatelessWidget {
-  const _OneWidget({super.key});
+  const _OneWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +181,7 @@ class _OneWidget extends StatelessWidget {
 }
 
 class _TwoWidget extends StatelessWidget {
-  const _TwoWidget({super.key});
+  const _TwoWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +191,7 @@ class _TwoWidget extends StatelessWidget {
 }
 
 class _ThreeWidget extends StatelessWidget {
-  const _ThreeWidget({super.key});
+  const _ThreeWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +200,7 @@ class _ThreeWidget extends StatelessWidget {
 }
 
 class _FourWidget extends StatelessWidget {
-  const _FourWidget({super.key});
+  const _FourWidget();
 
   @override
   Widget build(BuildContext context) {
