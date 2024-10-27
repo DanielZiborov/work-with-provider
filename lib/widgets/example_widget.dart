@@ -1,14 +1,58 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Model {
   final int one;
   final int two;
-
   Model({
     required this.one,
     required this.two,
   });
+
+  Model copyWith({
+    int? one,
+    int? two,
+  }) {
+    return Model(
+      one: one ?? this.one,
+      two: two ?? this.two,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'one': one,
+      'two': two,
+    };
+  }
+
+  factory Model.fromMap(Map<String, dynamic> map) {
+    return Model(
+      one: map['one'] as int,
+      two: map['two'] as int,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Model.fromJson(String source) =>
+      Model.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() => 'Model(one: $one, two: $two)';
+
+  @override
+  bool operator ==(covariant Model other) {
+    if (identical(this, other)) return true;
+
+    return other.one == one && other.two == two;
+  }
+
+  @override
+  int get hashCode => one.hashCode ^ two.hashCode;
 }
 
 class ExampleWidget extends StatefulWidget {
