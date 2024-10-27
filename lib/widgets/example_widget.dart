@@ -1,6 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -66,12 +64,12 @@ class _ExampleWidgetState extends State<ExampleWidget> {
   var model = Model(one: 0, two: 0);
 
   void inc1() {
-    model = Model(one: model.one + 1, two: model.two);
+    model = model.copyWith(one: model.one + 1);
     setState(() {});
   }
 
   void inc2() {
-    model = Model(one: model.one, two: model.two + 1);
+    model = model.copyWith(two: model.two + 1);
     setState(() {});
   }
 
