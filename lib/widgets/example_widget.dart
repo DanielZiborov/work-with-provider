@@ -56,18 +56,22 @@ class Complex {
 class Model {
   final int one;
   final int two;
+  final Complex complex;
   Model({
     required this.one,
     required this.two,
+    required this.complex,
   });
 
   Model copyWith({
     int? one,
     int? two,
+    Complex? complex,
   }) {
     return Model(
       one: one ?? this.one,
       two: two ?? this.two,
+      complex: complex ?? this.complex,
     );
   }
 
@@ -75,6 +79,7 @@ class Model {
     return <String, dynamic>{
       'one': one,
       'two': two,
+      'complex': complex.toMap(),
     };
   }
 
@@ -82,6 +87,7 @@ class Model {
     return Model(
       one: map['one'] as int,
       two: map['two'] as int,
+      complex: Complex.fromMap(map['complex'] as Map<String, dynamic>),
     );
   }
 
@@ -91,17 +97,17 @@ class Model {
       Model.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'Model(one: $one, two: $two)';
+  String toString() => 'Model(one: $one, two: $two, complex: $complex)';
 
   @override
   bool operator ==(covariant Model other) {
     if (identical(this, other)) return true;
 
-    return other.one == one && other.two == two;
+    return other.one == one && other.two == two && other.complex == complex;
   }
 
   @override
-  int get hashCode => one.hashCode ^ two.hashCode;
+  int get hashCode => one.hashCode ^ two.hashCode ^ complex.hashCode;
 }
 
 class ExampleWidget extends StatefulWidget {
@@ -112,7 +118,14 @@ class ExampleWidget extends StatefulWidget {
 }
 
 class _ExampleWidgetState extends State<ExampleWidget> {
-  var model = Model(one: 0, two: 0);
+  var model = Model(
+    one: 0,
+    two: 0,
+    complex: Complex(
+      valueOne: 0,
+      valueTwo: 0,
+    ),
+  );
 
   void inc1() {
     model = model.copyWith(one: model.one + 1);
@@ -121,6 +134,26 @@ class _ExampleWidgetState extends State<ExampleWidget> {
 
   void inc2() {
     model = model.copyWith(two: model.two + 1);
+    setState(() {});
+  }
+
+  void inc3() {
+    final comlex = model.complex.copyWith(
+      valueOne: model.complex.valueOne + 1,
+    );
+    model = model.copyWith(
+      complex: comlex,
+    );
+    setState(() {});
+  }
+
+  void inc4() {
+    final comlex = model.complex.copyWith(
+      valueTwo: model.complex.valueTwo + 1,
+    );
+    model = model.copyWith(
+      complex: comlex,
+    );
     setState(() {});
   }
 
@@ -156,8 +189,12 @@ class _View extends StatelessWidget {
               child: const Text("two"),
             ),
             ElevatedButton(
-              onPressed: () {},
-              child: const Text("complex"),
+              onPressed: state.inc3,
+              child: const Text("complex1"),
+            ),
+            ElevatedButton(
+              onPressed: state.inc4,
+              child: const Text("complex2"),
             ),
             const _OneWidget(),
             const _TwoWidget(),
@@ -195,7 +232,8 @@ class _ThreeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("0");
+    final value = context.select((Model value) => value.complex.valueOne);
+    return Text("$value");
   }
 }
 
@@ -204,6 +242,7 @@ class _FourWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("0");
+    final value = context.select((Model value) => value.complex.valueTwo);
+    return Text("$value");
   }
 }
