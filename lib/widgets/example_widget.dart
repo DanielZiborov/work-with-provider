@@ -106,6 +106,9 @@ class _View extends StatelessWidget {
             Consumer<Model>(builder: (context, model, _) {
               return Text("${model.one}");
             }),
+            Consumer2<Model,ForExample>(builder: (context,model,forExample,_){
+              return Text("${model.one}");
+            }),
           ],
         ),
       ),
