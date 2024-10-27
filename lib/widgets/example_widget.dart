@@ -103,6 +103,9 @@ class _View extends StatelessWidget {
             const _TwoWidget(),
             const _ThreeWidget(),
             const _FourWidget(),
+            Consumer<Model>(builder: (context, model, _) {
+              return Text("${model.one}");
+            }),
           ],
         ),
       ),
