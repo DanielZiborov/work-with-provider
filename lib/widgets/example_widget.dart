@@ -1,169 +1,44 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Complex {
-  final int valueOne;
-  final int valueTwo;
-  Complex({
-    required this.valueOne,
-    required this.valueTwo,
-  });
-
-  Complex copyWith({
-    int? valueOne,
-    int? valueTwo,
-  }) {
-    return Complex(
-      valueOne: valueOne ?? this.valueOne,
-      valueTwo: valueTwo ?? this.valueTwo,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'valueOne': valueOne,
-      'valueTwo': valueTwo,
-    };
-  }
-
-  factory Complex.fromMap(Map<String, dynamic> map) {
-    return Complex(
-      valueOne: map['valueOne'] as int,
-      valueTwo: map['valueTwo'] as int,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Complex.fromJson(String source) =>
-      Complex.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() => 'Complex(valueOne: $valueOne, valueTwo: $valueTwo)';
-
-  @override
-  bool operator ==(covariant Complex other) {
-    if (identical(this, other)) return true;
-
-    return other.valueOne == valueOne && other.valueTwo == valueTwo;
-  }
-
-  @override
-  int get hashCode => valueOne.hashCode ^ valueTwo.hashCode;
+  var valueOne = 0;
+  var valueTwo = 0;
 }
 
-class Model {
-  final int one;
-  final int two;
-  final Complex complex;
-  Model({
-    required this.one,
-    required this.two,
-    required this.complex,
-  });
-
-  Model copyWith({
-    int? one,
-    int? two,
-    Complex? complex,
-  }) {
-    return Model(
-      one: one ?? this.one,
-      two: two ?? this.two,
-      complex: complex ?? this.complex,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'one': one,
-      'two': two,
-      'complex': complex.toMap(),
-    };
-  }
-
-  factory Model.fromMap(Map<String, dynamic> map) {
-    return Model(
-      one: map['one'] as int,
-      two: map['two'] as int,
-      complex: Complex.fromMap(map['complex'] as Map<String, dynamic>),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Model.fromJson(String source) =>
-      Model.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() => 'Model(one: $one, two: $two, complex: $complex)';
-
-  @override
-  bool operator ==(covariant Model other) {
-    if (identical(this, other)) return true;
-
-    return other.one == one && other.two == two && other.complex == complex;
-  }
-
-  @override
-  int get hashCode => one.hashCode ^ two.hashCode ^ complex.hashCode;
-}
-
-class ExampleWidget extends StatefulWidget {
-  const ExampleWidget({super.key});
-
-  @override
-  State<ExampleWidget> createState() => _ExampleWidgetState();
-}
-
-class _ExampleWidgetState extends State<ExampleWidget> {
-  var model = Model(
-    one: 0,
-    two: 0,
-    complex: Complex(
-      valueOne: 0,
-      valueTwo: 0,
-    ),
-  );
+class Model extends ChangeNotifier {
+  var one = 0;
+  var two = 0;
+  final complex = Complex();
 
   void inc1() {
-    model = model.copyWith(one: model.one + 1);
-    setState(() {});
+    one += 1;
+    notifyListeners();
   }
 
   void inc2() {
-    model = model.copyWith(two: model.two + 1);
-    setState(() {});
+    two += 1;
+    notifyListeners();
   }
 
   void inc3() {
-    final comlex = model.complex.copyWith(
-      valueOne: model.complex.valueOne + 1,
-    );
-    model = model.copyWith(
-      complex: comlex,
-    );
-    setState(() {});
+    complex.valueOne += 1;
+    notifyListeners();
   }
 
   void inc4() {
-    final comlex = model.complex.copyWith(
-      valueTwo: model.complex.valueTwo + 1,
-    );
-    model = model.copyWith(
-      complex: comlex,
-    );
-    setState(() {});
+    complex.valueTwo += 1;
+    notifyListeners();
   }
+}
+
+class ExampleWidget extends StatelessWidget {
+  const ExampleWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider.value(value: this),
-        Provider.value(value: model),
-      ],
+    return ChangeNotifierProvider(
+      create: (context) => Model(),
       child: const _View(),
     );
   }
@@ -174,26 +49,26 @@ class _View extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<_ExampleWidgetState>();
+    final model = context.read<Model>();
     return Scaffold(
       appBar: AppBar(title: const Text("Example of work")),
       body: SafeArea(
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: state.inc1,
+              onPressed: model.inc1,
               child: const Text("one"),
             ),
             ElevatedButton(
-              onPressed: state.inc2,
+              onPressed: model.inc2,
               child: const Text("two"),
             ),
             ElevatedButton(
-              onPressed: state.inc3,
+              onPressed: model.inc3,
               child: const Text("complex1"),
             ),
             ElevatedButton(
-              onPressed: state.inc4,
+              onPressed: model.inc4,
               child: const Text("complex2"),
             ),
             const _OneWidget(),
