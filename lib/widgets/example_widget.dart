@@ -103,10 +103,19 @@ class _View extends StatelessWidget {
             const _TwoWidget(),
             const _ThreeWidget(),
             const _FourWidget(),
-            Consumer<Model>(builder: (context, model, _) {
-              return Text("${model.one}");
-            }),
-            Consumer2<Model,ForExample>(builder: (context,model,forExample,_){
+            Consumer<Model>(
+              builder: (context, model, child) {
+                return Column(
+                  children: [
+                    child ?? const SizedBox.shrink(),
+                    Text("${model.one}"),
+                  ],
+                );
+              },
+              child: const Text("vdvfdbvdfbfdbd"),
+            ),
+            Consumer2<Model, ForExample>(
+                builder: (context, model, forExample, _) {
               return Text("${model.one}");
             }),
           ],
