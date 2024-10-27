@@ -124,7 +124,7 @@ class _OneWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final value = context.watch<Model>().one;
+    final value = context.select((Model value) => value.one);
     return Text('$value');
   }
 }
@@ -134,7 +134,7 @@ class _TwoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final value = context.watch<Model>().two;
+    final value = context.select((Model value) => value.two);
     return Text('$value');
   }
 }
