@@ -2,26 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Model {
-  var one = 0;
-  var two = 0;
+  final int one;
+  final int two;
 
-  void inc1() {
-    one += 1;
-  }
-
-  void inc2() {
-    two += 1;
-  }
+  Model({
+    required this.one,
+    required this.two,
+  });
 }
 
-class ExampleWidget extends StatelessWidget {
+class ExampleWidget extends StatefulWidget {
   const ExampleWidget({super.key});
 
   @override
+  State<ExampleWidget> createState() => _ExampleWidgetState();
+}
+
+class _ExampleWidgetState extends State<ExampleWidget> {
+  var model = Model(one: 0, two: 0);
+
+  void inc1() {
+    model = Model(one: model.one + 1, two: model.two);
+    setState(() {});
+  }
+
+  void inc2() {
+    model = Model(one: model.one, two: model.two + 1);
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (context) => Model(),
-      child: const _View(),
+    return Provider.value(
+      value: this,
+      child: Provider.value(
+        value: model,
+        child: const _View(),
+      ),
     );
   }
 }
@@ -31,18 +48,18 @@ class _View extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<Model>();
+    final state = context.read<_ExampleWidgetState>();
     return Scaffold(
       appBar: AppBar(title: const Text("Example of work")),
       body: SafeArea(
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: model.inc1,
+              onPressed: state.inc1,
               child: const Text("one"),
             ),
             ElevatedButton(
-              onPressed: model.inc2,
+              onPressed: state.inc2,
               child: const Text("two"),
             ),
             ElevatedButton(
