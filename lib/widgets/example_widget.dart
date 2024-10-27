@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Model extends ChangeNotifier {
+class Model {
   var one = 0;
   var two = 0;
 
   void inc1() {
     one += 1;
-    notifyListeners();
   }
 
   void inc2() {
     two += 1;
-    notifyListeners();
   }
 }
 
@@ -21,7 +19,7 @@ class ExampleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return Provider(
       create: (context) => Model(),
       child: const _View(),
     );
