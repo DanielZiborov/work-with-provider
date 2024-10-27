@@ -103,6 +103,13 @@ class _View extends StatelessWidget {
             const _TwoWidget(),
             const _ThreeWidget(),
             const _FourWidget(),
+            Selector<Model, int>(
+              builder: (context, value,_) {
+                return Text("$value");
+              },
+              selector: (_, model) => model.one,
+              shouldRebuild: (previous, next) => next - previous >= 1,
+            ),
             Consumer<Model>(
               builder: (context, model, child) {
                 return Column(
@@ -114,10 +121,6 @@ class _View extends StatelessWidget {
               },
               child: const Text("vdvfdbvdfbfdbd"),
             ),
-            Consumer2<Model, ForExample>(
-                builder: (context, model, forExample, _) {
-              return Text("${model.one}");
-            }),
           ],
         ),
       ),
